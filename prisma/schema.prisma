@@ -35,6 +35,31 @@ model User {
   passwordHash  String    @map("password_hash")
   image         String?
   accounts      Account[]
+  member        Member?
 
   @@map("users")
+}
+
+model Member {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  name        String
+  gender      String
+  dateOfBirth DateTime @map("date_of_birth")
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
+  description String
+  city        String
+  country     String
+  image       String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos      Photo[]
+}
+
+model Photo {
+  id       String  @id @default(cuid())
+  url      String
+  publicId String? @map("public_id")
+  memberId String  @map("member_id")
+  member   Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
